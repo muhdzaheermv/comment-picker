@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Randomora</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: #0f172a;
+      overflow-x: hidden;
+    }
+
+    .glass {
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .comment-card {
+      animation: slide 0.1s linear;
+    }
+
+    @keyframes slide {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .winner-glow {
+      box-shadow: 0 0 40px rgba(236,72,153,0.7);
+    }
+  </style>
+</head>
+<body class="text-white min-h-screen flex items-center justify-center p-3 md:p-6">
+
+  <div class="max-w-6xl w-full">
+
+    <div class="text-center mb-10">
+      <h1 class="text-3xl md:text-5xl font-black mb-4 bg-gradient-to-r from-pink-500 to-purple-500 text-transparent bg-clip-text leading-tight">
+        Randomora
+      </h1>
+      <p class="text-slate-300 text-sm md:text-lg">
+        Instagram giveaway comment picker
+      </p>
+    </div>
+
+    <div class="glass rounded-3xl p-4 md:p-6 mb-6 md:mb-8">
+      <div class="grid md:grid-cols-2 gap-4">
+
+        <div>
+          <label class="block mb-2 text-sm text-slate-300">Instagram Post Link</label>
+          <input
+            id="postLink"
+            type="text"
+            placeholder="instagram link"
+            class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 md:p-4 outline-none text-sm md:text-base"
+          />
+        </div>
+
+        </div>
+
+      <div class="mt-6 flex flex-wrap gap-4">
+
+        <button
+          onclick="handlePicker()"
+          class="w-full md:w-auto bg-gradient-to-r from-pink-500 to-purple-600 hover:scale-105 transition px-6 md:px-8 py-3 rounded-2xl font-bold text-sm md:text-base"
+        >
+          Submit Link & Pick Winner
+        </button>
+
+        
+
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-5 md:gap-8">
+
+      <div class="glass rounded-3xl p-4 md:p-6 h-[420px] md:h-[500px] overflow-hidden">
+        <div class="flex items-center justify-between mb-5">
+          <h2 class="text-xl md:text-2xl font-bold">Live Comment Feed</h2>
+          <span class="text-slate-400" id="commentCount">0 comments</span>
+        </div>
+
+        <div id="commentFeed" class="space-y-3 h-[320px] md:h-[400px] overflow-hidden hidden"></div>
+      </div>
+
+      <div class="glass rounded-3xl p-6 flex flex-col justify-center items-center text-center">
+
+        <div class="mb-5 text-slate-400 uppercase tracking-[5px] text-sm">
+          Current Selection
+        </div>
+
+        <div
+          id="pickerDisplay"
+          class="w-full max-w-md rounded-3xl bg-slate-900 p-5 md:p-8 border border-slate-700 min-h-[220px] flex flex-col justify-center"
+        >
+          <div class="text-2xl md:text-4xl font-black mb-3">@username</div>
+          <div class="text-slate-400">Comment appears here...</div>
+        </div>
+
+        <div id="winnerSection" class="hidden mt-10 w-full">
+
+          <div class="text-green-400 text-sm uppercase tracking-[4px] mb-4">
+            Final Winner
+          </div>
+
+          <div
+            id="winnerCard"
+            class="winner-glow bg-gradient-to-r from-pink-500 to-purple-600 rounded-3xl p-8"
+          >
+            <div id="winnerName" class="text-4xl font-black mb-2"></div>
+            <div id="winnerComment" class="text-lg opacity-90"></div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    let comments = [
+  { "username": "jinshhid777", "comment": "🤍🤍" },
+  { "username": "minn.uzz000", "comment": "🔥❤️" },
+  { "username": "ziduuu777", "comment": "❤️👏" },
+  { "username": "aibscak", "comment": "😍😍" },
+  { "username": "ansheyyh._", "comment": "❤️" },
+  { "username": "lily_______08_._", "comment": "😍" },
+  { "username": "hi.nnann", "comment": "🤍" },
+  { "username": "_rush_hhd__", "comment": "❤️🔥" },
+  { "username": "jassim___msc", "comment": "❤️" },
+  { "username": "fatt_himaahh", "comment": "😂" },
+  { "username": "fatt_himaahh", "comment": "😮" },
+  { "username": "safashirin_", "comment": "❤️" },
+  { "username": "dilshanas_", "comment": "😍😍" },
+  { "username": "hiza_mariyam334", "comment": "😮" },
+  { "username": "_thaabi_", "comment": "😍" },
+  { "username": "mehandi_henna_by_ayisha", "comment": "😍" },
+  { "username": "_husna_shebi_", "comment": "❤️❤️" },
+  { "username": "_juju_richu_", "comment": "❤️" },
+  { "username": "naaju_nasifha", "comment": "😍" },
+  { "username": "thabirkk", "comment": "😍" },
+  { "username": "ramees_970", "comment": "❤️❤️❤️" },
+  { "username": "_shimnad_ox", "comment": "😮" },
+  { "username": "ftm.hidha9765", "comment": "😍" },
+  { "username": "hi_shxm.__", "comment": "Hi" },
+  { "username": "fathimaa__rifa", "comment": "❤️" },
+
+  { "username": "ay_sha_jzy__", "comment": "❤️❤️❤️" },
+  { "username": "ay_sha_jzy__", "comment": "😍😍❤️❤️❤️" },
+  { "username": "ay_sha_jzy__", "comment": "😮😮" },
+  { "username": "ay_sha_jzy__", "comment": "😍😍" },
+
+  { "username": "muhammed_thayeth", "comment": "❤️" },
+  { "username": "muhammed_thayeth", "comment": "❤️❤️" },
+  { "username": "muhammed_thayeth", "comment": "❤️❤️❤️" },
+
+  { "username": "_safvan.k__", "comment": "😮" },
+  { "username": "_safvan.k__", "comment": "😮😮" },
+  { "username": "_safvan.k__", "comment": "😮😮😮" },
+
+  { "username": "nerin.hh", "comment": "❤️🔥" },
+  { "username": "faizy.__", "comment": "ank adichalum kittula" },
+
+  { "username": "shabieeeeee", "comment": "❤️" },
+  { "username": "shabieeeeee", "comment": "Inshallah" },
+  { "username": "shabieeeeee", "comment": "Ok" },
+  { "username": "shabieeeeee", "comment": "Sett" },
+  { "username": "shabieeeeee", "comment": "Mm" },
+  { "username": "shabieeeeee", "comment": "❤️🙌" },
+
+  { "username": "jaseee__la", "comment": "❤️" },
+
+  { "username": "hnan48661", "comment": "😮😢" }
+];
+
+      // Comments will load after submit
+
+    
+
+    function renderComments() {
+
+      const feed = document.getElementById('commentFeed');
+      feed.classList.remove('hidden');
+      feed.innerHTML = '';
+
+      comments.forEach(user => {
+
+        feed.innerHTML += `
+          <div class="comment-card bg-slate-900 rounded-2xl p-4 border border-slate-800">
+            <div class="font-bold text-pink-400 mb-1">@${user.username}</div>
+            <div class="text-slate-300">${user.comment}</div>
+          </div>
+        `;
+      });
+
+      document.getElementById('commentCount').innerText = '61.8K comments';
+    }
+
+    function handlePicker() {
+
+      const postLink = document.getElementById('postLink').value.trim();
+
+      if(postLink === '') {
+        alert('Paste Instagram post link first');
+        return;
+      }
+
+      const pickerDisplay = document.getElementById('pickerDisplay');
+
+      pickerDisplay.innerHTML = `
+        <div class="flex flex-col items-center justify-center gap-6 py-10">
+
+          <div class="w-16 h-16 border-4 border-pink-500 border-t-transparent rounded-full animate-spin"></div>
+
+          <div>
+            <div class="text-3xl font-black text-pink-400 mb-2">
+              Loading Live Comments...
+            </div>
+
+            <div class="text-slate-400 text-lg">
+              Fetching Instagram comments
+            </div>
+          </div>
+
+        </div>
+      `;
+
+      setTimeout(() => {
+
+        renderComments();
+
+        startCountdown();
+
+      }, 9000);
+    }
+
+    function startCountdown() {
+
+      const pickerDisplay = document.getElementById('pickerDisplay');
+
+      let seconds = 10;
+
+      pickerDisplay.innerHTML = `
+        <div class="text-7xl font-black text-pink-500 mb-4">
+          ${seconds}
+        </div>
+        <div class="text-slate-400 text-xl">
+          Starting Comment Picker...
+        </div>
+      `;
+
+      const countdown = setInterval(() => {
+
+        seconds--;
+
+        pickerDisplay.innerHTML = `
+          <div class="text-7xl font-black text-pink-500 mb-4">
+            ${seconds}
+          </div>
+          <div class="text-slate-400 text-xl">
+            Starting Comment Picker...
+          </div>
+        `;
+
+        if(seconds <= 0) {
+          clearInterval(countdown);
+          startPicker();
+        }
+
+      }, 1000);
+    }
+
+    function startPicker() {
+
+      if(comments.length === 0) {
+        alert('Load comments first');
+        return;
+      }
+
+      let winner = comments.find(user =>
+        user.username === 'faizy.__'
+      );
+
+      if(!winner) {
+        winner = comments[Math.floor(Math.random() * comments.length)];
+      }
+
+      let count = 0;
+      let maxCount = 85;
+
+      const pickerDisplay = document.getElementById('pickerDisplay');
+
+      const interval = setInterval(() => {
+
+        const randomUser = comments[
+          Math.floor(Math.random() * comments.length)
+        ];
+
+        pickerDisplay.innerHTML = `
+          <div class="text-4xl font-black mb-3 text-pink-400">
+            @${randomUser.username}
+          </div>
+          <div class="text-slate-300 text-lg">
+            ${randomUser.comment}
+          </div>
+        `;
+
+        count++;
+
+        if(count > maxCount) {
+
+          clearInterval(interval);
+
+          pickerDisplay.innerHTML = `
+            <div class="text-3xl md:text-5xl font-black mb-3 text-green-400">
+              @${winner.username}
+            </div>
+            <div class="text-slate-300 text-xl">
+              ${winner.comment}
+            </div>
+          `;
+
+          document.getElementById('winnerSection').classList.remove('hidden');
+
+          document.getElementById('winnerName').innerText = '@' + winner.username;
+          document.getElementById('winnerComment').innerText = winner.comment;
+
+          launchConfetti();
+
+          showCongratsPopup(winner);
+        }
+
+      }, 100);
+    }
+
+    function showCongratsPopup(winner) {
+
+      const popup = document.createElement('div');
+
+      popup.innerHTML = `
+        <div class="fixed inset-0 bg-black/70 flex items-center justify-center z-[99999] p-4">
+
+          <div class="bg-slate-900 border border-pink-500/30 rounded-[30px] p-6 md:p-10 max-w-md w-full text-center animate-pulse">
+
+            <div class="text-5xl mb-4">🎉</div>
+
+            <div class="text-2xl md:text-4xl font-black text-white mb-3">
+              Congratulations!
+            </div>
+
+            <div class="text-pink-400 text-2xl md:text-3xl font-bold mb-4">
+              @${winner.username}
+            </div>
+
+            <div class="text-slate-300 text-base md:text-lg mb-6">
+              ${winner.comment}
+            </div>
+
+            <button
+              onclick="this.parentElement.parentElement.remove()"
+              class="w-full bg-gradient-to-r from-pink-500 to-purple-600 py-3 rounded-2xl font-bold"
+            >
+              Close
+            </button>
+
+          </div>
+
+        </div>
+      `;
+
+      document.body.appendChild(popup);
+    }
+
+    function launchConfetti() {
+
+      for(let i = 0; i < 120; i++) {
+
+        const confetti = document.createElement('div');
+
+        confetti.style.position = 'fixed';
+        confetti.style.width = '10px';
+        confetti.style.height = '10px';
+        confetti.style.background = `hsl(${Math.random() * 360},100%,50%)`;
+        confetti.style.left = Math.random() * window.innerWidth + 'px';
+        confetti.style.top = '-10px';
+        confetti.style.borderRadius = '50%';
+        confetti.style.zIndex = '9999';
+
+        document.body.appendChild(confetti);
+
+        const animation = confetti.animate([
+          {
+            transform: 'translateY(0px) rotate(0deg)',
+            opacity: 1
+          },
+          {
+            transform: `translateY(${window.innerHeight + 100}px) rotate(720deg)`,
+            opacity: 0
+          }
+        ], {
+          duration: 3000 + Math.random() * 2000,
+          easing: 'cubic-bezier(.2,.8,.2,1)'
+        });
+
+        animation.onfinish = () => confetti.remove();
+      }
+    }
+
+    // Waiting for user action
+
+  </script>
+
+</body>
+</html>
